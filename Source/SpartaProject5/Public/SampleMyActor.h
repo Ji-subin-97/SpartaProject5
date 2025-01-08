@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -10,7 +10,14 @@ UCLASS()
 class SPARTAPROJECT5_API ASampleMyActor : public AActor
 {
 	GENERATED_BODY()
-	
+private:
+	FVector2D start;
+
+	UPROPERTY(EditAnywhere, Category = "MoveCount")
+	int32 moveCount;
+
+	int32 evCnt;
+	double totDist;
 public:	
 	// Sets default values for this actor's properties
 	ASampleMyActor();
@@ -23,4 +30,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// New Function
+	void Move();
+	int32 Step();
+	int32 createEvent();
 };
