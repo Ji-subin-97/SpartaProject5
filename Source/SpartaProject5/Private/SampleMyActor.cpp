@@ -43,27 +43,29 @@ void ASampleMyActor::Move()
 
 	UE_LOG(LogTemp, Warning, TEXT("처음 위치: ( %.2lf, %.2lf )"), x, y);
 
-	for (int i = 0; i < moveCount; i++) {
-		xTemp = x;
-		yTemp = y;
+	if (GEngine) {
+		for (int i = 0; i < moveCount; i++) {
+			xTemp = x;
+			yTemp = y;
 
-		x += Step();
-		y += Step();
+			x += Step();
+			y += Step();
 
-		dis = FMath::Sqrt((x - xTemp) * (x - xTemp) + (y - yTemp) * (y - yTemp));
-		if (dis > 0) {
-			totDist += dis;
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("%d 번째 이동 거리: %.2lf"), i + 1, dis));
+			dis = FMath::Sqrt((x - xTemp) * (x - xTemp) + (y - yTemp) * (y - yTemp));
+			if (dis > 0) {
+				totDist += dis;
+				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("%d 번째 이동 거리: %.2lf"), i + 1, dis));
+			}
+			else {
+				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("%d 번째 이동은 없었습니다."), i + 1));
+			}
+
+			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Black, FString::Printf(TEXT("현재 위치: ( %.2lf, %.2lf )"), x, y));
 		}
-		else {
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("%d 번째 이동은 없었습니다."), i + 1));
-		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Black, FString::Printf(TEXT("현재 위치: ( %.2lf, %.2lf )"), x, y));
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("총 이동 거리: %.2lf"), totDist));
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("이벤트 발생횟수: %d"), evCnt));
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("총 이동 거리: %.2lf"), totDist));
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("이벤트 발생횟수: %d"), evCnt));
 
 	// 로그출력
 	// UE_LOG(LogTemp, Warning, TEXT("현재 위치: ( %.2lf, %.2lf )"), x, y);
@@ -88,8 +90,10 @@ int32 ASampleMyActor::createEvent()
 	float RandomValue = FMath::RandRange(1.0f, 100.0f);
 
 	if (RandomValue < Probability) {
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("이동하는 도중 이벤트가 발생하였습니다.")));
-		return 1;
+		if (GEngine) {
+			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("이동하는 도중 이벤트가 발생하였습니다.")));
+			return 1;
+		}
 	}
 	else {
 		return 0;
